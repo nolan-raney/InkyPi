@@ -1,0 +1,12 @@
+[Unit]
+Description=Synchronize InkyPi photos from the NAS
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/inkypi-photo-sync
+TimeoutStartSec=120
+TimeoutStopSec=10
+Nice=10
+IOSchedulingClass=idle

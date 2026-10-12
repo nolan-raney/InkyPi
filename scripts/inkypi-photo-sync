@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Sync only into the app-owned local cache; never write to the NAS.
+set -euo pipefail
+source_dir=/mnt/inkypi-photos
+cache_dir=/var/lib/inkypi-photos
+exec 9>/run/lock/inkypi-photo-sync.lock
+flock -n 9 || exit 0
+
+# Mounting happens in this background job, never in the display's request thread.
+if ! mountpoint -q "$source_dir"; then
+    mount "$source_dir"
+fi
+if [[ ! -f "$source_dir/.inkypi-photo-source" ]]; then
+    echo 'Photo source marker missing; leaving the local cache untouched.' >&2
+    exit 1
+fi
+mkdir -p "$cache_dir"
+rsync --archive --no-owner --no-group --delay-updates \
+    --partial-dir=.inkypi-partial --delete-after \
+    --exclude='.*' --include='*/' \
+    --include='*.[jJ][pP][gG]' --include='*.[jJ][pP][eE][gG]' \
+    --include='*.[pP][nN][gG]' --include='*.[hH][eE][iI][cC]' \
+    --include='*.[hH][eE][iI][fF]' --include='*.[wW][eE][bB][pP]' \
+    --include='*.[tT][iI][fF]' --include='*.[tT][iI][fF][fF]' \
+    --exclude='*' --no-links -- "$source_dir/" "$cache_dir/"

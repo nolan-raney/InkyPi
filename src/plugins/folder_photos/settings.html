@@ -1,0 +1,32 @@
+<div class="form-group">
+    <label for="folderPath" class="form-label">Photo folder:</label>
+    <input type="text" id="folderPath" name="folderPath" class="form-input"
+           value="/var/lib/inkypi-photos" required>
+    <small>New photos appear automatically after synchronization.</small>
+</div>
+<div class="form-group">
+    <label for="fitMode" class="form-label">Photo layout:</label>
+    <select id="fitMode" name="fitMode" class="form-input">
+        <option value="contain">Fit whole photo (white borders)</option>
+        <option value="crop">Fill screen (crop edges)</option>
+    </select>
+</div>
+<div class="form-group">
+    <label for="includeSubfolders" class="form-label">Include subfolders:</label>
+    <select id="includeSubfolders" name="includeSubfolders" class="form-input">
+        <option value="true">Yes</option>
+        <option value="false">No</option>
+    </select>
+</div>
+<p>Photos rotate randomly without immediately repeating the previous photo when another
+    readable photo is available. Set the refresh interval in your playlist.</p>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    if (loadPluginSettings) {
+        document.getElementById('folderPath').value = pluginSettings.folderPath || '/var/lib/inkypi-photos';
+        document.getElementById('fitMode').value = pluginSettings.fitMode || 'contain';
+        document.getElementById('includeSubfolders').value =
+            String(pluginSettings.includeSubfolders ?? 'true');
+    }
+});
+</script>
