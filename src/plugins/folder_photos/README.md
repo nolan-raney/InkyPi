@@ -29,10 +29,11 @@ NAS is off. Set InkyPi's refresh interval to 6 minutes (or another desired inter
 3. Configure an explicit read-only mount in `/etc/fstab`, using the verified export path:
 
    ```text
-   192.168.50.153:/mnt/HomeLab-DataP1/InkyPhotos /mnt/inkypi-photos nfs ro,noauto,soft,timeo=50,retrans=2,nosuid,nodev,noexec 0 0
+   nas.example.local:/mnt/example-pool/InkyPhotos /mnt/inkypi-photos nfs ro,noauto,soft,timeo=50,retrans=2,nosuid,nodev,noexec 0 0
    ```
 
-   The example dataset path must be verified before use. `noauto` avoids delaying boot;
+   Replace `nas.example.local` and `/mnt/example-pool/InkyPhotos` with your server and
+   verified export path before use. `noauto` avoids delaying boot;
    the sync job mounts it on demand. `soft` limits retries for this read-only photo source;
    it is not a recommended option for writable storage. The service also has a two-minute
    timeout. Do not mount the remote share directly at the local cache path.
@@ -61,7 +62,7 @@ until the next sync replaces it.
 ## Upload from iPhone
 
 On the home LAN, open Files → Browse → menu → Connect to Server, enter
-`smb://192.168.50.153`, and sign in using the existing SMB upload account. Select the photo
+`smb://nas.example.local`, and sign in using the existing SMB upload account. Select the photo
 share. In Photos, select images → Share → Save to Files → that share. Originals are kept
 on TrueNAS; the Pi caches them locally. A fresh upload normally reaches the cache on the
 next five-minute sync and the screen on the next display refresh.

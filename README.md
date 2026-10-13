@@ -1,11 +1,73 @@
-# InkyPi 
+# NAS Photo Frame for InkyPi
 
-## Photo-frame customization in this fork
+An e-ink photo frame that reads a shared photo library, works through NAS outages, and
+accepts uploads from an iPhone without a separate photo server.
 
-The `feature/nas-photo-frame` branch adds **Folder Photos** and a background NAS-to-local-cache
-sync job. See [Folder Photos](src/plugins/folder_photos/README.md) and the
-[fresh-Pi recovery guide](docs/folder-photos-recovery.md). Clone that branch to include the
-customization; it has not been merged into this fork's `main` branch.
+Built and deployed on a **Raspberry Pi Zero 2 W** with a **Pimoroni Inky display** and
+**TrueNAS**, running as a VM on Proxmox. Photos sync to the Pi every five minutes and
+rotate randomly every six minutes. Both intervals are independently configurable.
+
+This is a customization of [fatihak/InkyPi](https://github.com/fatihak/InkyPi), which
+provides the display drivers, web interface, playlist scheduler, and image-loading
+infrastructure. My additions are the **Folder Photos plugin**, **NAS cache synchronization**,
+and **deployment and recovery documentation**.
+
+**[Project walkthrough](docs/nas-photo-frame.md)** ·
+**[Plugin and setup](src/plugins/folder_photos/README.md)** ·
+**[Reinstall and recovery](docs/folder-photos-recovery.md)** ·
+**[Browse the implementation](src/plugins/folder_photos/folder_photos.py)**
+
+## How it works
+
+```mermaid
+flowchart LR
+    Phone["iPhone: Photos → Files"] -->|SMB upload| NAS["TrueNAS photo dataset"]
+    NAS -->|Read-only NFS| Sync["systemd timer + rsync"]
+    Sync -->|Every 5 minutes| Cache["Local photo cache"]
+    Cache --> Plugin["Folder Photos plugin"]
+    Plugin -->|Every 6 minutes| Display["Inky e-ink display"]
+```
+
+The display reads only local files. If the NAS or Wi-Fi is unavailable, cached photos keep
+rotating; synchronization resumes when the source becomes reachable.
+
+## What this branch adds
+
+- **Folder Photos:** rescans the library at each refresh, randomly selects a readable image,
+  and avoids an immediate repeat when another readable photo is available.
+- **iPhone photo support:** HEIC/HEIF and JPEG, including EXIF rotation; also PNG, WebP, and TIFF.
+  Live Photo videos are ignored while their still images can be displayed.
+- **Display options:** fit the whole photo with white borders or crop to fill the screen,
+  with horizontal and vertical layouts.
+- **Background synchronization:** read-only NFS, image-only rsync filters, a source marker,
+  an exclusive lock, and a bounded systemd job keep network work outside display refreshes.
+- **Recovery:** instructions for a replacement SD card, private settings backups, and
+  Wi-Fi/access-point migration.
+
+[Focused tests](tests/test_folder_photos.py) cover changing folders, repeat avoidance,
+corrupt files, HEIC decoding, EXIF rotation, layout, and preserving photos when a plugin
+is removed. The deployed system was also checked for read-only NAS access, synchronization,
+actual display updates, and rendering from cache with the NAS mount disconnected.
+A complete fresh-SD-card recovery remains untested.
+
+## Use this fork
+
+The customization lives on **`feature/nas-photo-frame`**, rather than this fork's `main` branch:
+
+```bash
+git clone --branch feature/nas-photo-frame --single-branch https://github.com/nolan-raney/InkyPi.git
+```
+
+Follow the [setup guide](src/plugins/folder_photos/README.md) for the NAS cache, or the
+[fresh-Pi guide](docs/folder-photos-recovery.md) for a full installation. Instructions use
+example network names and paths; substitute your own. Personal photos, credentials, and
+live device settings are kept outside the repository.
+
+## Upstream InkyPi
+
+The following project overview, hardware photo, and installation reference are retained
+from upstream. The hardware photo shows an upstream build, rather than this deployment.
+For the NAS photo-frame customization, use the branch-specific guides above.
 
 <img src="./docs/images/inky_clock.jpg" />
 
@@ -53,7 +115,7 @@ See [the wiki](https://github.com/fatihak/InkyPi/wiki) for a list of community-m
 - Picture Frame or 3D Stand
     - See [community.md](./docs/community.md) for 3D models, custom builds, and other submissions from the community
 
-**Disclosure:** The links above are affiliate links. I may earn a commission from qualifying purchases made through them, at no extra cost to you, which helps maintain and develop this project.
+**Upstream disclosure:** The hardware links above are affiliate links retained from the original InkyPi README; its author may earn a commission from qualifying purchases.
 
 ## Installation
 To install InkyPi, follow these steps:

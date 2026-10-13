@@ -12,17 +12,16 @@ sync and display behavior; a fresh SD-card reinstall has not been performed as a
 ## 1. Prepare the Pi
 
 Install a supported 64-bit Raspberry Pi OS, configure Wi-Fi and SSH, and use the desired
-hostname/user (the existing device uses `npr-inky` and `nolan`). The deployment runs Debian
+hostname/user. The verified deployment runs Debian
 13/Trixie on a Pi Zero 2 W with a Pimoroni Inky display. Keep the same display hardware.
 
 Give the Pi a DHCP reservation, or update the TrueNAS photo NFS share's authorized host to
-its new LAN IP. The current deployment authorizes **192.168.50.62**. A new IP without an
-updated authorization will produce an NFS access-denied error.
+its LAN IP. A new IP without updated authorization will produce an NFS access-denied error.
 
 For multiple home networks, new access points, or restoring saved Wi-Fi profiles, see
 [Wi-Fi recovery and migration](wifi-migration.md).
 
-## 2. Install the fork, including our plugin
+## 2. Install the fork and Folder Photos
 
 On the fresh Pi:
 
@@ -36,13 +35,15 @@ sudo bash install/install.sh
 
 Accept the installer's reboot prompt and reconnect afterward. For the existing Pimoroni
 Inky display, no Waveshare `-W` argument is needed. This installs the normal InkyPi service,
-Python dependencies, and the Folder Photos code. It does not yet install our NAS mount/timer.
+Python dependencies, and the Folder Photos code. It does not yet install the NAS mount/timer.
 
 ## 3. Reconnect the photo source
 
-The current photo dataset is `HomeLab-DataP1/InkyPhotos` at
-`/mnt/HomeLab-DataP1/InkyPhotos`, shared as SMB **InkyPhotos** and read-only NFS. The export
-maps the Pi to the NAS user `nolan`. Keep the `.inkypi-photo-source` marker at its root.
+Use a dedicated photo dataset shared as SMB **InkyPhotos** for uploads and read-only NFS
+for the Pi. The examples below use NAS hostname `nas.example.local` and dataset
+`example-pool/InkyPhotos`; replace them with your server and verified export path. Map
+the NFS reader to an account allowed to read the dataset, and restrict the export to the
+Pi's reserved LAN address. Keep the `.inkypi-photo-source` marker at its root.
 
 ```bash
 sudo apt-get install -y nfs-common rsync
@@ -53,7 +54,7 @@ sudoedit /etc/fstab
 Add the following entry **once**, verifying that the server and export path are still valid:
 
 ```text
-192.168.50.153:/mnt/HomeLab-DataP1/InkyPhotos /mnt/inkypi-photos nfs ro,noauto,soft,timeo=50,retrans=2,nosuid,nodev,noexec 0 0
+nas.example.local:/mnt/example-pool/InkyPhotos /mnt/inkypi-photos nfs ro,noauto,soft,timeo=50,retrans=2,nosuid,nodev,noexec 0 0
 ```
 
 Then install and test the background job:
@@ -111,7 +112,7 @@ Without a settings backup, open InkyPi's web UI and:
 
 The cache checks the NAS every five minutes; the display rotates every 6 minutes. Existing
 NAS photos do not need to be uploaded again. iPhone uploads still go to Files →
-`smb://192.168.50.153` → Registered User → **InkyPhotos**.
+`smb://nas.example.local` → Registered User → **InkyPhotos**.
 
 ## 5. Verify recovery
 
