@@ -18,7 +18,7 @@ For a replacement Pi or SD card, follow the [fresh-Pi recovery guide](../../../d
 Use the local cache `/var/lib/inkypi-photos` as the plugin's photo folder. A separate
 `inkypi-photo-sync` systemd timer synchronizes a read-only NAS mount every five minutes.
 Display refreshes never access the network, so cached photos remain available while the
-NAS is off. Set InkyPi's refresh interval to 30 minutes (or another desired interval).
+NAS is off. Set InkyPi's refresh interval to 6 minutes (or another desired interval).
 
 1. Prepare a dedicated TrueNAS photo dataset/share. Allow the uploader to write via SMB
    and the Pi to read via a dedicated read-only NFS export restricted to its LAN address.

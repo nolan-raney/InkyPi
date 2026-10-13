@@ -103,13 +103,13 @@ not backed up because it is regenerated from the NAS.
 
 Without a settings backup, open InkyPi's web UI and:
 
-1. Set the device refresh interval to **30 minutes**, preserving the desired timezone,
+1. Set the device refresh interval to **6 minutes**, preserving the desired timezone,
    orientation and image settings.
 2. Add **Folder Photos** to an all-day playlist, with photo folder
    `/var/lib/inkypi-photos`, **Fit whole photo**, and subfolders enabled.
-3. Set its playlist refresh interval to **30 minutes** and display the instance once to test.
+3. Set its playlist refresh interval to **6 minutes** and display the instance once to test.
 
-The cache checks the NAS every five minutes; the display rotates every 30 minutes. Existing
+The cache checks the NAS every five minutes; the display rotates every 6 minutes. Existing
 NAS photos do not need to be uploaded again. iPhone uploads still go to Files →
 `smb://192.168.50.153` → Registered User → **InkyPhotos**.
 
