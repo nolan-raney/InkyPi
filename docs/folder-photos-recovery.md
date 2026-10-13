@@ -19,6 +19,9 @@ Give the Pi a DHCP reservation, or update the TrueNAS photo NFS share's authoriz
 its new LAN IP. The current deployment authorizes **192.168.50.62**. A new IP without an
 updated authorization will produce an NFS access-denied error.
 
+For multiple home networks, new access points, or restoring saved Wi-Fi profiles, see
+[Wi-Fi recovery and migration](wifi-migration.md).
+
 ## 2. Install the fork, including our plugin
 
 On the fresh Pi:
