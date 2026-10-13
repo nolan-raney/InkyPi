@@ -11,6 +11,8 @@ image is displayed. Hidden files, incomplete rsync files, empty files, and symli
 ignored. Choose full-photo layout with white borders or a cropped full-screen layout.
 Removing the plugin from a playlist does not delete photos.
 
+For a replacement Pi or SD card, follow the [fresh-Pi recovery guide](../../../docs/folder-photos-recovery.md).
+
 ## NAS photo frame
 
 Use the local cache `/var/lib/inkypi-photos` as the plugin's photo folder. A separate

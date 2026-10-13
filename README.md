@@ -1,5 +1,12 @@
 # InkyPi 
 
+## Photo-frame customization in this fork
+
+The `feature/nas-photo-frame` branch adds **Folder Photos** and a background NAS-to-local-cache
+sync job. See [Folder Photos](src/plugins/folder_photos/README.md) and the
+[fresh-Pi recovery guide](docs/folder-photos-recovery.md). Clone that branch to include the
+customization; it has not been merged into this fork's `main` branch.
+
 <img src="./docs/images/inky_clock.jpg" />
 
 
